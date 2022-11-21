@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery/models/cart_models.dart';
 import 'package:provider/provider.dart';
 
+import 'cart_page.dart';
 import 'components/grocery_item_tile.dart';
 
 class Homepage extends StatelessWidget {
@@ -11,6 +12,13 @@ class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const CartPage()));
+        },
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.shopping_bag),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -41,7 +49,7 @@ class Homepage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 24),
             child: Text('Fresh items'),
           ),
-          SizedBox(height: 30,),
+          const SizedBox(height: 30,),
           // Let's order some fresh food for you
 
           // divider
@@ -50,13 +58,16 @@ class Homepage extends StatelessWidget {
           Expanded(
               child: Consumer<CartModel>(
                 builder: (context, value, child) => GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio:  1 / 1.2),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio:  1 / 1.4),
                     itemCount: value.shopItems.length,
                     itemBuilder: (context, index) => GroceryItemTile(
                       itemName: value.shopItems[index][0],
                       itemPrice: value.shopItems[index][1],
                       imagePath: value.shopItems[index][2],
-                      color: value.shopItems[index][3],)),
+                      color: value.shopItems[index][3],
+                      onPressed: () {
+                      Provider.of<CartModel>(context, listen: false).addItemsToCart(index);
+                    },),),
               ) ),
         ],
       ),
